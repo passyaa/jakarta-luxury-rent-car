@@ -18,6 +18,8 @@
 | GET    | `/packages`                               | Get data event packages                      |
 | POST   | `/users/register-membership`              | Register membership                          |
 | GET    | `/users/get-membership`                   | Get data membership                          |
+| POST   | `/users/topup`                            | Topup deposit amount                         |
+| GET    | `/users/get-deposit`                      | Get data deposit amount                      |
 | POST   | `/users/booking`                          | Booking luxury cars                          |
 | POST   | `/users/making-payment`                   | Payment                                      |
 | POST   | `/users/call-assistance`                  | Call Assistance if you get the trouble       |
@@ -31,12 +33,12 @@
 
 
 ## Flow Process untuk Jasa Sewa Mobil Mewah
-![Flow Process](https://example.com/image.png)
+![Flow Process](https://github.com/passyaa/jakarta-luxury-rent-car/blob/master/assets/image/jakarta-luxury-rent-car.png)
 
 
 ## ERD
-![ERD LINK](https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxury-rent-car)
-![ERD IMAGE](https://example.com/image.png)
+Open your browser (https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxury-rent-car)
+![ERD IMAGE](https://github.com/passyaa/jakarta-luxury-rent-car/blob/master/assets/image/ERD.PNG)
 
 ### Entities and Relationships
 - Setiap User hanya bisa memiliki satu jenis Membership dan satu Membership hanya bisa dimiliki oleh satu User (One-to-One)
@@ -104,12 +106,12 @@
 6. git push heroku master
 
 ### Konfigurasi Environment Variables
-1. heroku config:set DB_USER=postgres.csqufkmaujkysluqfqqt
-2. heroku config:set DB_PASSWORD=4YZzcVnWyRkRXMwfYUeq
-3. heroku config:set DB_HOST=aws-0-ap-southeast-1.pooler.supabase.com
-4. heroku config:set DB_PORT=6543
-5. heroku config:set DB_NAME=postgres
-6. heroku config:set JWT_SIGNING_KEY=GC2
+1. heroku config:set DB_USER=
+2. heroku config:set DB_PASSWORD=
+3. heroku config:set DB_HOST=
+4. heroku config:set DB_PORT=
+5. heroku config:set DB_NAME=
+6. heroku config:set JWT_SIGNING_KEY=
 7. heroku config:set GO111MODULE=on
 8. heroku config:set PORT=8080
 
