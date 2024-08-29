@@ -14,12 +14,12 @@ import (
 	"jakarta-luxury-rent-car/middlewares"
 )
 
-// CustomValidator adalah struct untuk validator custom
+// struct untuk validator custom
 type CustomValidator struct {
 	validator *validator.Validate
 }
 
-// Validate adalah method untuk memvalidasi input menggunakan validator custom
+// memvalidasi input menggunakan validator custom
 func (cv *CustomValidator) Validate(i interface{}) error {
 	return cv.validator.Struct(i)
 }

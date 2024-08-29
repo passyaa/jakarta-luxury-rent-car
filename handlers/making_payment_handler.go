@@ -54,6 +54,26 @@ func MakingPayment(c echo.Context) error {
 		})
 	}
 
+	var userModel models.User
+	if err := database.DB.Where("user_id = ?", userID).First(&userModel).Error; err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"message": "Owner not found",
+			"error":   err.Error(),
+		})
+	}
+
+	// update data models.User terhadap DepositAmount
+	currentAmount := userModel.DepositAmount - rentalHistory.TotalCost
+	userModel.DepositAmount = currentAmount
+
+	// Save the updated user model back to the database
+	if err := database.DB.Save(&userModel).Error; err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": "Failed to update deposit amount",
+			"error":   err.Error(),
+		})
+	}
+
 	var userOwnerModel models.User
 	if err := database.DB.Where("role = ?", "owner").First(&userOwnerModel).Error; err != nil {
 		return c.JSON(http.StatusNotFound, echo.Map{

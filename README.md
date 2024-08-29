@@ -37,7 +37,8 @@
 
 
 ## ERD
-Open your browser (https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxury-rent-car)
+Link for Access ERD (https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxury-rent-car)
+
 ![ERD IMAGE](https://github.com/passyaa/jakarta-luxury-rent-car/blob/master/assets/image/ERD.PNG)
 
 ### Entities and Relationships
@@ -57,12 +58,6 @@ Open your browser (https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxury
 ### Preparation Environment Variables
 1. Sesuaikan .env dengan DB PostgreSQL - SUPABASE
     ```sh
-    DB_USER=postgres.csqufkmaujkysluqfqqt
-    DB_PASSWORD=4YZzcVnWyRkRXMwfYUeq
-    DB_HOST=aws-0-ap-southeast-1.pooler.supabase.com
-    DB_PORT=6543
-    DB_NAME=postgres
-    JWT_SIGNING_KEY=GC2
    ```
 
 ### Tambah file DockerFile & heroku.yml
