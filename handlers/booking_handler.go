@@ -296,12 +296,12 @@ func CreateInvoiceAndSendWhatsApp(userID uint, bookingReq BookingRequest, rental
 			fmt.Println("Go originalCost", originalCost)
 			fmt.Println("Go discountAmount", discountAmount)
 		case "Gold":
-			originalCost := rentalHistory.TotalCost / 0.20 // 20% discount
+			originalCost := rentalHistory.TotalCost / 0.80 // 20% discount
 			discountAmount = originalCost * 0.20
 			fmt.Println("Go originalCost", originalCost)
 			fmt.Println("Go discountAmount", discountAmount)
 		case "Platinum":
-			originalCost := rentalHistory.TotalCost / 0.30 // 30% discount
+			originalCost := rentalHistory.TotalCost / 0.70 // 30% discount
 			discountAmount = originalCost * 0.30
 			fmt.Println("Go originalCost", originalCost)
 			fmt.Println("Go discountAmount", discountAmount)
