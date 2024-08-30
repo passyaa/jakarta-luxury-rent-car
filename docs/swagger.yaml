@@ -170,7 +170,6 @@ definitions:
       package_name:
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
   description: This is Jakarta Luxury Rent Car service API documentation.

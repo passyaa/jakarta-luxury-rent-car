@@ -31,7 +31,6 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 // @version 1.0
 // @description This is Jakarta Luxury Rent Car service API documentation.
 
-// @host localhost:8080
 // @BasePath /
 
 // @securityDefinitions.apikey BearerAuth

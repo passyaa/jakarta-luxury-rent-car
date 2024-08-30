@@ -3,7 +3,7 @@
 ### URL Individual Project
 
 1. Local Server : http://localhost:8080/
-2. Heroku Server : 
+2. Heroku Server : https://api-jakarta-luxury-rent-car-7e7362098043.herokuapp.com/ | https://git.heroku.com/api-jakarta-luxury-rent-car.git
 
 ### List API
 1. Download Colletion Localhost Postman [Postman Collection]()
@@ -27,8 +27,8 @@
 | GET    | `/owner/report`                           | Get details report                           |
 
 ### Swaggo Doc
-1. Access Swagger UI Localhost : Open your browser and navigate to http://localhost:8080/swagger/index.html
-2. Access Swagger UI Localhost : Open your browser and navigate to ()
+1. Access Swagger UI Localhost : Open your browser and navigate to (http://localhost:8080/swagger/index.html)
+2. Access Swagger UI Localhost : Open your browser and navigate to (https://api-jakarta-luxury-rent-car-7e7362098043.herokuapp.com/swagger/index.html)
 3. Authorize with JWT : When using the Authorize feature, ensure you manually input your token with the "Bearer" prefix. The token should be entered as "Bearer <your_jwt_token>". This is necessary because the "Bearer" prefix must be included manually
 
 
@@ -92,21 +92,25 @@ Buat file heroku.yml
 
 ### Buat Aplikasi di Heroku
 1. heroku login
-2. heroku create api-kamal --buildpack heroku/go
+2. heroku create api-jakarta-luxury-rent-car --buildpack heroku/go
 3. git branch // (optional) untuk melihat position file
 4. git remote -v // (optional) untuk melihat alamat git
-5. git remote add origin https://git.heroku.com/api-kamal-gc2.git // (optional) jika belum ada tambahkan alamat githubnya
+5. git remote add origin https://git.heroku.com/api-jakarta-luxury-rent-car.git // (optional) jika belum ada tambahkan alamat githubnya
 6. git push heroku master
 
 ### Konfigurasi Environment Variables
-1. heroku config:set DB_USER=
-2. heroku config:set DB_PASSWORD=
-3. heroku config:set DB_HOST=
-4. heroku config:set DB_PORT=
-5. heroku config:set DB_NAME=
-6. heroku config:set JWT_SIGNING_KEY=
-7. heroku config:set GO111MODULE=on
-8. heroku config:set PORT=8080
+- heroku config:set DB_USER=
+- heroku config:set DB_PASSWORD=
+- heroku config:set DB_HOST=
+- heroku config:set DB_PORT=
+- heroku config:set DB_NAME=
+- heroku config:set JWT_SECRET=
+- heroku config:set twilioAccountSID=
+- heroku config:set twilioAuthToken=
+- heroku config:set twilioPhoneNumber=
+- heroku config:set API_KEY_XENDIT=
+- heroku config:set GO111MODULE=on
+- heroku config:set PORT=8080
 
 ### Verifikasi Deployment
 1. heroku open
@@ -121,7 +125,7 @@ Buat file heroku.yml
     git commit -m "changes messages"
     git branch // (optional) untuk melihat position file
     git remote -v // (optional) untuk melihat alamat git
-    git remote add origin https://git.heroku.com/api-kamal-gc2.git // (optional) jika belum ada tambahkan alamat githubnya
+    git remote add origin https://git.heroku.com/api-jakarta-luxury-rent-car.git // (optional) jika belum ada tambahkan alamat githubnya
     git push heroku master
     heroku restart
    ```
