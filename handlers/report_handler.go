@@ -114,15 +114,15 @@ func Report(c echo.Context) error {
 		durationDays := rental.ReturnDate.Sub(rental.RentalDate).Hours() / 24
 		duration := fmt.Sprintf("%.0f days", durationDays)
 
-		costDetails := fmt.Sprintf("Base Cost for %s: %.2f", duration, car.RentalCosts*durationDays)
+		costDetails := fmt.Sprintf("Total Cost for %s: %.2f", duration, car.RentalCosts*durationDays)
 		if rental.AirportTransfer {
-			costDetails += " + Airport Transfer: 50.00"
+			costDetails += " + Airport Transfer: 50"
 		}
 		if rental.ConciergeServices {
-			costDetails += " + Concierge Services: 100.00"
+			costDetails += " + Concierge Services: 100"
 		}
 		if rental.DriverID != nil {
-			costDetails += " + Driver: 100.00"
+			costDetails += fmt.Sprintf(" + Driver: %.2f", durationDays*100)
 		}
 		if rental.PackageID != nil {
 			costDetails += fmt.Sprintf(" + Package: %.2f", eventPackage.Cost)

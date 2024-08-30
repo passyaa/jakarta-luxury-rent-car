@@ -78,12 +78,13 @@ func BookCar(c echo.Context) error {
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to create rental history", err.Error())
 	}
 
-	// // Send confirmation notification
+	// // // Send confirmation notification
 	if err := sendConfirmationNotification(userID, rentalHistory, car, driver, eventPackage); err != nil {
+
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to send WhatsApp notification", err.Error())
 	}
 
-	// Send Invoice notification
+	// // Send Invoice notification
 	if err := CreateInvoiceAndSendWhatsApp(userID, bookingReq, rentalHistory, car, driver, eventPackage); err != nil {
 		return jsonResponse(c, http.StatusInternalServerError, "Failed to send Invoice notification", err.Error())
 	}
@@ -135,21 +136,24 @@ func calculateTotalCost(bookingReq BookingRequest, car models.Car, eventPackage 
 	totalCost := rentalDays * car.RentalCosts
 
 	if bookingReq.DriverID != nil {
-		totalCost += rentalDays * 100.0
+		totalCost += rentalDays * 100
 	}
+
 	if bookingReq.PackageID != nil {
 		totalCost += eventPackage.Cost
 	}
 
 	// Add costs for optional services
 	if bookingReq.PickupLocation != "" && bookingReq.DropoffLocation != "" {
-		totalCost += 100.0
+		totalCost += 100
 	}
+
 	if bookingReq.AirportTransfer {
-		totalCost += 50.0
+		totalCost += 50
 	}
+
 	if bookingReq.ConciergeServices {
-		totalCost += 100.0
+		totalCost += 100
 	}
 
 	return totalCost
@@ -168,6 +172,7 @@ func applyMembershipDiscount(userID uint, totalCost float64) float64 {
 			totalCost *= 0.70 // 30% discount
 		}
 	}
+
 	return totalCost
 }
 
@@ -261,17 +266,40 @@ func sendConfirmationNotification(userID uint, rentalHistory models.RentalHistor
 }
 
 func CreateInvoiceAndSendWhatsApp(userID uint, bookingReq BookingRequest, rentalHistory models.RentalHistory, car models.Car, driver models.Driver, eventPackage models.EventPackage) error {
+
+	var costDriver, costPackage, costPickup, costTranferAirport, costConcierge, discountAmount float64
+
 	var userModel models.User
 	if err := database.DB.Where("user_id = ?", userID).First(&userModel).Error; err != nil {
 		return err
 	}
 
+	var membership models.Membership
+	if err := database.DB.Where("user_id = ?", userID).First(&membership).Error; err == nil {
+		// Apply discount based on discount level
+		switch membership.DiscountLevel {
+		case "Silver":
+			originalCost := rentalHistory.TotalCost / 0.90 // 10% discount
+			discountAmount = originalCost * 0.10
+			fmt.Println("Go originalCost", originalCost)
+			fmt.Println("Go discountAmount", discountAmount)
+		case "Gold":
+			originalCost := rentalHistory.TotalCost / 0.20 // 20% discount
+			discountAmount = originalCost * 0.20
+			fmt.Println("Go originalCost", originalCost)
+			fmt.Println("Go discountAmount", discountAmount)
+		case "Platinum":
+			originalCost := rentalHistory.TotalCost / 0.30 // 30% discount
+			discountAmount = originalCost * 0.30
+			fmt.Println("Go originalCost", originalCost)
+			fmt.Println("Go discountAmount", discountAmount)
+		}
+	}
+
 	rentalDays := bookingReq.ReturnDate.Sub(bookingReq.RentalDate).Hours() / 24
 
-	var costDriver, costPackage, costPickup, costTranferAirport, costConcierge float64
-
 	if bookingReq.DriverID != nil {
-		costDriver = rentalDays * 100.0
+		costDriver = 100
 	}
 	if bookingReq.PackageID != nil {
 		costPackage = eventPackage.Cost
@@ -279,13 +307,15 @@ func CreateInvoiceAndSendWhatsApp(userID uint, bookingReq BookingRequest, rental
 
 	// Add costs for optional services
 	if bookingReq.PickupLocation != "" && bookingReq.DropoffLocation != "" {
-		costPickup = 100.0
+		costPickup = 100
 	}
+
 	if bookingReq.AirportTransfer {
-		costTranferAirport = 50.0
+		costTranferAirport = 50
 	}
+
 	if bookingReq.ConciergeServices {
-		costConcierge = 100.0
+		costConcierge = 100
 	}
 
 	// Xendit API URL
@@ -337,8 +367,8 @@ func CreateInvoiceAndSendWhatsApp(userID uint, bookingReq BookingRequest, rental
 		},
 		"fees": []map[string]interface{}{
 			{
-				"type":  "Platform Fee",
-				"value": 100,
+				"type":  "Discount Level - " + membership.DiscountLevel,
+				"value": discountAmount,
 			},
 		},
 	}
