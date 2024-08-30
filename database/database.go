@@ -7,8 +7,10 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	// Menggunakan path project yang benar
+	"gorm.io/gorm/logger"
 )
+
+// Menggunakan path project yang benar
 
 var DB *gorm.DB
 
@@ -21,7 +23,13 @@ func InitDB() {
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_PORT"))
 
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// Disable prepared statement caching
+	DB, err = gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dsn,
+		PreferSimpleProtocol: true, // Menonaktifkan penggunaan prepared statement
+	}), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info), // Menambahkan logger untuk debugging
+	})
 	if err != nil {
 		log.Fatal("Failed to connect to database: ", err)
 	}
