@@ -100,12 +100,20 @@ func CallAssistance(c echo.Context) error {
 		})
 	}
 
-	toPhoneNumber := fmt.Sprintf("whatsapp:+%s", userModel.PhoneNumber)
+	var userOwnerModel models.User
+	if err := database.DB.Where("role = ?", "owner").First(&userOwnerModel).Error; err != nil {
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"message": "Owner not found",
+			"error":   err.Error(),
+		})
+	}
+
+	toPhoneNumber := fmt.Sprintf("whatsapp:+%s", userOwnerModel.PhoneNumber)
 
 	gmapsLink := "https://www.google.com/maps/search/?api=1&query=" + url.QueryEscape(callAssistance.Location)
 
 	messageBody := "Subject: Call Assistance Request - [Rental ID: " + strconv.Itoa(int(rentalHistory.RentalID)) + "]\n\n" +
-		"Dear" + userModel.Email + " - " + userModel.Role + ",\n\n" +
+		"Dear " + userOwnerModel.Email + " - " + userOwnerModel.Role + ",\n\n" +
 		"You received call assistance. Below are the details of user request:\n\n" +
 		"User Details:\n" +
 		"  - Email: " + userModel.Email + "\n" +

@@ -144,7 +144,7 @@ func ApprovalBooking(c echo.Context) error {
 
 		messageBodyOwner := fmt.Sprintf(
 			"Dear %s - %s,\n\n"+
-				"The car '%s' has been successfully booked by '%s' and is ready for use. Please ensure it is in perfect condition for the customer\n",
+				"The car '%s' has been successfully booked by '%s' and Please ensure it is in perfect condition for the customer\n",
 			userModel.Email,
 			userModel.Role,
 			carModel.Name,
