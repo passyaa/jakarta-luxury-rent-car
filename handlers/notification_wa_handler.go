@@ -12,7 +12,7 @@ import (
 func sendWhatsAppNotification(toPhoneNumber string, messageBody string) error {
 	twilioAccountSID := os.Getenv("twilioAccountSID")
 	twilioAuthToken := os.Getenv("twilioAuthToken")
-	twilioPhoneNumber := os.Getenv("twilioPhoneNumber")
+	twilioPhoneNumber := "whatsapp:+14155238886"
 
 	// Twilio API endpoint
 	twilioURL := fmt.Sprintf("https://api.twilio.com/2010-04-01/Accounts/%s/Messages.json", twilioAccountSID)
