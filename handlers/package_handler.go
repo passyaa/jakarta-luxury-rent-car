@@ -9,6 +9,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// @Summary Get available event packages
+// @Description Retrieve a list of all available event packages
+// @Tags Public
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.EventPackage "List of available event packages"
+// @Failure 500 {object} map[string]string "Error get event packages"
+// @Router /packages [get]
 func GetEventPackage(c echo.Context) error {
 	var eventPackages []models.EventPackage
 

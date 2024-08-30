@@ -38,7 +38,17 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
-// Handler untuk registrasi
+// @Summary Register new user
+// @Description Register new user
+// @Tags Register and Login
+// @Accept json
+// @Produce json
+// @Param request body RegisterRequest true "User registration request body"
+// @Success 201 {object} UserResponse
+// @Failure 400 {object} map[string]interface{} "Invalid input"
+// @Failure 409 {object} map[string]interface{} "User already exists with this email"
+// @Failure 500 {object} map[string]interface{} "Failed to hash password or register user"
+// @Router /register [post]
 func RegisterUser(c echo.Context) error {
 	var req RegisterRequest
 	if err := c.Bind(&req); err != nil {
@@ -47,6 +57,13 @@ func RegisterUser(c echo.Context) error {
 
 	if err := c.Validate(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
+	}
+
+	// Check if the user already exists by email
+	var existingUser models.User
+	if err := database.DB.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
+		// User already exists
+		return c.JSON(http.StatusConflict, echo.Map{"error": "User already exists with this email"})
 	}
 
 	// Hash password
@@ -66,7 +83,7 @@ func RegisterUser(c echo.Context) error {
 
 	// Save user to database
 	if err := database.DB.Create(&user).Error; err != nil {
-		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to register user"})
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusCreated, UserResponse{
@@ -78,7 +95,17 @@ func RegisterUser(c echo.Context) error {
 	})
 }
 
-// Handler untuk login
+// @Summary User login
+// @Description Login user and return JWT token
+// @Tags Register and Login
+// @Accept json
+// @Produce json
+// @Param request body LoginRequest true "User login request body"
+// @Success 200 {object} UserResponse
+// @Failure 400 {object} map[string]interface{} "Invalid input"
+// @Failure 401 {object} map[string]interface{} "Invalid email or password"
+// @Failure 500 {object} map[string]interface{} "Failed to generate token"
+// @Router /login [post]
 func LoginUser(c echo.Context) error {
 	var req LoginRequest
 	if err := c.Bind(&req); err != nil {

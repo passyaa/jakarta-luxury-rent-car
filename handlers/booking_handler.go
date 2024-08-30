@@ -30,7 +30,18 @@ type BookingRequest struct {
 	ConciergeServices bool      `json:"concierge_services"` // Optional
 }
 
-// BookCar function for handling car booking
+// @Summary Book a car
+// @Description Book a car
+// @Tags Role User
+// @Accept json
+// @Produce json
+// @Param bookingReq body BookingRequest true "Booking request body containing car ID and other booking details"
+// @Success 200 {object} map[string]interface{} "Success message and details of the car booking"
+// @Failure 400 {object} map[string]string "Invalid request format, validation error, or insufficient stock"
+// @Failure 404 {object} map[string]string "Car, driver, or package not found"
+// @Failure 500 {object} map[string]string "Failed to create rental history, send notifications, or process booking"
+// @Router /users/booking [post]
+// @Security BearerAuth
 func BookCar(c echo.Context) error {
 	var bookingReq BookingRequest
 

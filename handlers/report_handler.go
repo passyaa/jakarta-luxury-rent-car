@@ -40,6 +40,18 @@ type RentalReportResponse struct {
 	AirportTransfer    bool      `json:"airport_transfer"`
 }
 
+// @Summary Generate rental reports
+// @Description Generate detailed rental history reports for the owner
+// @Tags Role Owner
+// @Accept json
+// @Produce json
+// @Success 200 {array} RentalReportResponse "List of rental reports"
+// @Failure 403 {object} map[string]interface{} "Permission denied. Only owners can approve or reject bookings."
+// @Failure 404 {object} map[string]interface{} "User or related entity not found"
+// @Failure 500 {object} map[string]interface{} "Failed to fetch rental histories or related data"
+// @Router /owner/report [get]
+// @Security BearerAuth
+
 func Report(c echo.Context) error {
 	// Extract user ID from JWT token
 	user := c.Get("user").(*jwt.Token)

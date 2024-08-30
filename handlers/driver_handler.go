@@ -9,6 +9,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// @Summary Get drivers
+// @Description Get drivers
+// @Tags Public
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Driver "List of available drivers"
+// @Failure 500 {object} map[string]string "Error get drivers"
+// @Router /drivers [get]
 func GetDriver(c echo.Context) error {
 	var drivers []models.Driver
 

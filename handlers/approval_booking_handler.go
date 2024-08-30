@@ -17,7 +17,19 @@ type ApprovalRequest struct {
 	Action   string `json:"action" validate:"required,oneof=approve reject"`
 }
 
-// ApprovalBooking function to handle booking approval or rejection
+// @Summary Approve or reject a car booking
+// @Description Approve or reject a car booking
+// @Tags Role Owner
+// @Accept json
+// @Produce json
+// @Param approvalReq body ApprovalRequest true "Approval request body containing rental ID and action (approve/reject)"
+// @Success 200 {object} map[string]interface{} "Success message indicating the booking has been approved or rejected"
+// @Failure 400 {object} map[string]interface{} "Invalid request format, validation error, car out of stock, or invalid action"
+// @Failure 403 {object} map[string]interface{} "Permission denied. Only owners can approve or reject bookings."
+// @Failure 404 {object} map[string]interface{} "User, car, or rental history not found"
+// @Failure 500 {object} map[string]interface{} "Failed to update car stock, rental history, or send notifications"
+// @Router /owner/approve-booking [post]
+// @Security BearerAuth
 func ApprovalBooking(c echo.Context) error {
 	var approvalReq ApprovalRequest
 

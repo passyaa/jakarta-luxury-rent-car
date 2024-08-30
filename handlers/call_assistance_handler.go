@@ -21,6 +21,18 @@ type CallAssistanceRequest struct {
 	Location    string `json:"location" validate:"required"`
 }
 
+// @Summary Call assistance request
+// @Description Call assistance request
+// @Tags Role User
+// @Accept json
+// @Produce json
+// @Param assistanceReq body CallAssistanceRequest true "Call assistance request body containing rental ID, location, and description"
+// @Success 200 {object} map[string]interface{} "Success message and details of the call assistance request"
+// @Failure 400 {object} map[string]interface{} "Invalid request format or validation error"
+// @Failure 404 {object} map[string]interface{} "User, rental history, or car not found"
+// @Failure 500 {object} map[string]interface{} "Failed to create call assistance record or send WhatsApp notification"
+// @Router /users/call-assistance [post]
+// @Security BearerAuth
 func CallAssistance(c echo.Context) error {
 	var assistanceReq CallAssistanceRequest
 
@@ -93,7 +105,7 @@ func CallAssistance(c echo.Context) error {
 	gmapsLink := "https://www.google.com/maps/search/?api=1&query=" + url.QueryEscape(callAssistance.Location)
 
 	messageBody := "Subject: Call Assistance Request - [Rental ID: " + strconv.Itoa(int(rentalHistory.RentalID)) + "]\n\n" +
-		"Dear" + userModel.Email + " - "  + userModel.Role + ",\n\n" +
+		"Dear" + userModel.Email + " - " + userModel.Role + ",\n\n" +
 		"You received call assistance. Below are the details of user request:\n\n" +
 		"User Details:\n" +
 		"  - Email: " + userModel.Email + "\n" +

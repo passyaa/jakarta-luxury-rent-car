@@ -1,0 +1,628 @@
+basePath: /
+definitions:
+  handlers.ApprovalRequest:
+    properties:
+      action:
+        enum:
+        - approve
+        - reject
+        type: string
+      rental_id:
+        type: integer
+    required:
+    - action
+    - rental_id
+    type: object
+  handlers.BookingRequest:
+    properties:
+      airport_transfer:
+        description: Optional
+        type: boolean
+      car_id:
+        type: integer
+      concierge_services:
+        description: Optional
+        type: boolean
+      driver_id:
+        type: integer
+      dropoff_location:
+        description: Optional
+        type: string
+      package_id:
+        type: integer
+      pickup_location:
+        description: Optional
+        type: string
+      rental_date:
+        type: string
+      rental_duration:
+        enum:
+        - daily
+        - weekly
+        - monthly
+        type: string
+      return_date:
+        type: string
+    required:
+    - car_id
+    - driver_id
+    - package_id
+    - rental_date
+    - rental_duration
+    - return_date
+    type: object
+  handlers.CallAssistanceRequest:
+    properties:
+      description:
+        type: string
+      location:
+        type: string
+      rental_id:
+        type: integer
+    required:
+    - description
+    - location
+    - rental_id
+    type: object
+  handlers.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  handlers.PaymentRequest:
+    properties:
+      rental_id:
+        type: integer
+    type: object
+  handlers.RegisterRequest:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      password:
+        minLength: 3
+        type: string
+      phone_number:
+        type: string
+      role:
+        description: Optional
+        type: string
+    required:
+    - address
+    - email
+    - password
+    - phone_number
+    type: object
+  handlers.TopUpRequest:
+    properties:
+      deposit_amount:
+        type: number
+    type: object
+  handlers.UserResponse:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      role:
+        type: string
+      token:
+        type: string
+    type: object
+  models.Car:
+    properties:
+      car_id:
+        type: integer
+      category:
+        type: string
+      class:
+        type: string
+      fuel_type:
+        type: string
+      make:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      rental_costs:
+        type: number
+      stock_availability:
+        type: integer
+      transmission:
+        type: string
+      year:
+        type: integer
+    type: object
+  models.Driver:
+    properties:
+      driver_id:
+        type: integer
+      experience_years:
+        type: integer
+      license_number:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      rating:
+        type: number
+    type: object
+  models.EventPackage:
+    properties:
+      cost:
+        type: number
+      description:
+        type: string
+      package_id:
+        type: integer
+      package_name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is Jakarta Luxury Rent Car service API documentation.
+  title: Jakarta Luxury Rent Car API
+  version: "1.0"
+paths:
+  /cars:
+    get:
+      consumes:
+      - application/json
+      description: Get available luxury cars
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of available luxury cars
+          schema:
+            items:
+              $ref: '#/definitions/models.Car'
+            type: array
+        "500":
+          description: Error retrieving cars from database
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get available luxury cars
+      tags:
+      - Public
+  /drivers:
+    get:
+      consumes:
+      - application/json
+      description: Get drivers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of available drivers
+          schema:
+            items:
+              $ref: '#/definitions/models.Driver'
+            type: array
+        "500":
+          description: Error get drivers
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get drivers
+      tags:
+      - Public
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login user and return JWT token
+      parameters:
+      - description: User login request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.UserResponse'
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid email or password
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to generate token
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - Register and Login
+  /owner/approve-booking:
+    post:
+      consumes:
+      - application/json
+      description: Approve or reject a car booking
+      parameters:
+      - description: Approval request body containing rental ID and action (approve/reject)
+        in: body
+        name: approvalReq
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ApprovalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message indicating the booking has been approved or
+            rejected
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format, validation error, car out of stock,
+            or invalid action
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Permission denied. Only owners can approve or reject bookings.
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User, car, or rental history not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to update car stock, rental history, or send notifications
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Approve or reject a car booking
+      tags:
+      - Role Owner
+  /packages:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all available event packages
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of available event packages
+          schema:
+            items:
+              $ref: '#/definitions/models.EventPackage'
+            type: array
+        "500":
+          description: Error get event packages
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get available event packages
+      tags:
+      - Public
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: User registration request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handlers.UserResponse'
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: User already exists with this email
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to hash password or register user
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register new user
+      tags:
+      - Register and Login
+  /users/booking:
+    post:
+      consumes:
+      - application/json
+      description: Book a car
+      parameters:
+      - description: Booking request body containing car ID and other booking details
+        in: body
+        name: bookingReq
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.BookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message and details of the car booking
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format, validation error, or insufficient stock
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Car, driver, or package not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to create rental history, send notifications, or process
+            booking
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Book a car
+      tags:
+      - Role User
+  /users/call-assistance:
+    post:
+      consumes:
+      - application/json
+      description: Call assistance request
+      parameters:
+      - description: Call assistance request body containing rental ID, location,
+          and description
+        in: body
+        name: assistanceReq
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CallAssistanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message and details of the call assistance request
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User, rental history, or car not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to create call assistance record or send WhatsApp notification
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Call assistance request
+      tags:
+      - Role User
+  /users/get-deposit:
+    get:
+      consumes:
+      - application/json
+      description: RGet user deposit amount
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User's email and deposit amount
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user deposit amount
+      tags:
+      - Role User
+  /users/get-membership:
+    get:
+      consumes:
+      - application/json
+      description: Get user membership details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Membership details including membership ID, user ID, email,
+            and discount level
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User not found or no membership found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user membership details
+      tags:
+      - Role User
+  /users/making-payment:
+    post:
+      consumes:
+      - application/json
+      description: MakingPayment updates status from "Book" to "Paid"
+      parameters:
+      - description: Payment request body containing rental ID and payment details
+        in: body
+        name: paymentReq
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.PaymentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Rental status updated to 'Paid' successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request body or rental status is not 'Book'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Rental history or user not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to update rental status or deposit amount
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: MakingPayment updates status from "Book" to "Paid"
+      tags:
+      - Role User
+  /users/register-membership:
+    post:
+      consumes:
+      - application/json
+      description: Register a new membership
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Details of the newly registered membership including membership
+            ID, user ID, email, and discount level
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: User already has a membership registered
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to register membership
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Register a new membership
+      tags:
+      - Role User
+  /users/topup:
+    post:
+      consumes:
+      - application/json
+      description: Top up user deposit amount
+      parameters:
+      - description: Top-up request body
+        in: body
+        name: topUpReq
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.TopUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Updated email and deposit amount
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to update deposit amount
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Top up user deposit amount
+      tags:
+      - Role User
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

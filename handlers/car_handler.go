@@ -9,6 +9,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// @Summary Get available luxury cars
+// @Description Get available luxury cars
+// @Tags Public
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Car "List of available luxury cars"
+// @Failure 500 {object} map[string]interface{} "Error retrieving cars from database"
+// @Router /cars [get]
 func GetLuxuryCars(c echo.Context) error {
 	var cars []models.Car
 

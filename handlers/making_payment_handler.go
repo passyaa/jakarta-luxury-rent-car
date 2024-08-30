@@ -16,7 +16,18 @@ type PaymentRequest struct {
 	RentalID uint `json:"rental_id"`
 }
 
-// MakingPayment updates the status from "Book" to "Paid"
+// @Summary MakingPayment updates status from "Book" to "Paid"
+// @Description MakingPayment updates status from "Book" to "Paid"
+// @Tags Role User
+// @Accept json
+// @Produce json
+// @Param paymentReq body PaymentRequest true "Payment request body containing rental ID and payment details"
+// @Success 200 {object} map[string]string "Rental status updated to 'Paid' successfully"
+// @Failure 400 {object} map[string]string "Invalid request body or rental status is not 'Book'"
+// @Failure 404 {object} map[string]string "Rental history or user not found"
+// @Failure 500 {object} map[string]string "Failed to update rental status or deposit amount"
+// @Router /users/making-payment [post]
+// @Security BearerAuth
 func MakingPayment(c echo.Context) error {
 	// Get the user ID from JWT token
 	user := c.Get("user").(*jwt.Token)

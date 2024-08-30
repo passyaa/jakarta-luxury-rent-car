@@ -4,10 +4,13 @@ import (
 	"log"
 	"os"
 
+	_ "jakarta-luxury-rent-car/docs"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"jakarta-luxury-rent-car/database"
 	"jakarta-luxury-rent-car/handlers"
@@ -24,6 +27,19 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	return cv.validator.Struct(i)
 }
 
+// @title Jakarta Luxury Rent Car API
+// @version 1.0
+// @description This is Jakarta Luxury Rent Car service API documentation.
+
+// @host localhost:8080
+// @BasePath /
+
+// @securityDefinitions.apikey BearerAuth
+// @type apiKey
+// @in header
+// @name Authorization
+
+// @schemes http https
 func main() {
 	// Load environment variables from .env file
 	err := godotenv.Load()
@@ -46,6 +62,7 @@ func main() {
 	e.Use(middleware.CORS())
 
 	// Routes
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.POST("/register", handlers.RegisterUser)
 	e.POST("/login", handlers.LoginUser)
 	e.GET("/cars", handlers.GetLuxuryCars)

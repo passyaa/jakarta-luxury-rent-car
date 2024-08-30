@@ -11,6 +11,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// @Summary Register a new membership
+// @Description Register a new membership
+// @Tags Role User
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{} "Details of the newly registered membership including membership ID, user ID, email, and discount level"
+// @Failure 400 {object} map[string]interface{} "User already has a membership registered"
+// @Failure 404 {object} map[string]interface{} "User not found"
+// @Failure 500 {object} map[string]interface{} "Failed to register membership"
+// @Router /users/register-membership [post]
+// @Security BearerAuth
 func RegisterMembership(c echo.Context) error {
 	// Extract user ID from JWT token
 	user := c.Get("user").(*jwt.Token)
@@ -43,7 +54,7 @@ func RegisterMembership(c echo.Context) error {
 		DiscountLevel: randomDiscountLevel,
 	}
 
-	// Save the membership 
+	// Save the membership
 	if err := database.DB.Create(&newMembership).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Failed to register membership",
@@ -59,7 +70,15 @@ func RegisterMembership(c echo.Context) error {
 	})
 }
 
-
+// @Summary Get user membership details
+// @Description Get user membership details
+// @Tags Role User
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{} "Membership details including membership ID, user ID, email, and discount level"
+// @Failure 404 {object} map[string]interface{} "User not found or no membership found"
+// @Router /users/get-membership [get]
+// @Security BearerAuth
 func GetMembership(c echo.Context) error {
 	// Extract user ID from JWT token
 	user := c.Get("user").(*jwt.Token)

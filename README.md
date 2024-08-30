@@ -53,15 +53,13 @@ Link for Access ERD (https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxu
 ## Deployment Notes
 
 ### Persiapan DB to SUPABASE
-1. Connect to DB PostgreSQL - SUPABASE
+Connect to DB PostgreSQL - SUPABASE
 
 ### Preparation Environment Variables
-1. Sesuaikan .env dengan DB PostgreSQL - SUPABASE
-    ```sh
-   ```
+Sesuaikan .env dengan DB PostgreSQL - SUPABASE
 
 ### Tambah file DockerFile & heroku.yml
-1. Buat file DockerFile
+Buat file DockerFile
     ```sh
     FROM golang:1.22.1
 
@@ -79,7 +77,7 @@ Link for Access ERD (https://drawsql.app/teams/kamal-teams/diagrams/jakarta-luxu
 
     CMD ["/main"]
     ```
-2. Buat file heroku.yml
+Buat file heroku.yml
     ```sh
     build:
     docker:
