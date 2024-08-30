@@ -285,6 +285,7 @@ func CreateInvoiceAndSendWhatsApp(userID uint, bookingReq BookingRequest, rental
 		return err
 	}
 
+	fmt.Println("Go rentalHistory.TotalCost", rentalHistory.TotalCost)
 	var membership models.Membership
 	if err := database.DB.Where("user_id = ?", userID).First(&membership).Error; err == nil {
 		// Apply discount based on discount level
