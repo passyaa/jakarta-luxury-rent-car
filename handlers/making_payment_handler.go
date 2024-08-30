@@ -68,7 +68,7 @@ func MakingPayment(c echo.Context) error {
 	var userModel models.User
 	if err := database.DB.Where("user_id = ?", userID).First(&userModel).Error; err != nil {
 		return c.JSON(http.StatusNotFound, echo.Map{
-			"message": "Owner not found",
+			"message": "User not found",
 			"error":   err.Error(),
 		})
 	}
